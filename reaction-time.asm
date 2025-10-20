@@ -6,30 +6,42 @@
 .model flat, stdcall  
 option casemap:none  
 
-INCLUDE Irvine32.inc  
+INCLUDE Irvine32.inc
 
 .data  
-msg db "Welcome to our reaction time game!", 13,10, \
-        "Once you press the space bar you will be randomly given 0-3 seconds to press the space bar again and we will measure your reaction speed!", 13,10,0  
-bytesWritten dd ?  
+welcome db "Welcome to our reaction time game!",13,10,\
+        "Once you press the space bar you will be randomly given 0 to 3 seconds to press the space bar again, and we will measure your reaction speed!",13,10,0  
+pressMsg db "Press the space bar when ready...",13,10,0
 
-randomMillis  dd  ?            ; will store the random delay (0–3000)
+bytesWritten dd ?
+randomMillis dd ?    ;random delay
+inputRec INPUT_RECORD <>
+eventsRead  dd ?
 
 .code  
 main PROC  
-    ; Get handle to console output  
-    INVOKE GetStdHandle, STD_OUTPUT_HANDLE  
-    mov ebx, eax  
-    ; Write the message  
-    INVOKE WriteConsoleA, ebx, ADDR msg, LENGTHOF msg - 1, ADDR bytesWritten, NULL  
+    ; Print welcome and prompt
+    mov edx, OFFSET welcome
+    call WriteString
+    mov edx, OFFSET pressMsg
+    call WriteString
 
-    mov ecx, 3
+    ; --- Wait for first space bar ---
+WaitFirst:
+    call ReadKey
+    cmp al, ' '         ; space bar?
+    jne WaitFirst
+    
     ; initialize random number generator
     call Randomize
     ; generate a random number between 0 and 3000 (inclusive)
     mov  eax, 3001             ; upper bound (exclusive)
     call RandomRange           ; EAX = random number between 0 and 3000
     mov  randomMillis, eax     ; store result
+
+    ; Delay that many milliseconds
+    mov eax, randomMillis
+    call Delay
 
     ; display the generated value, this will be removed later
     mov  eax, randomMillis
