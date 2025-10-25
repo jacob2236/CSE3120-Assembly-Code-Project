@@ -17,6 +17,8 @@ goMsg    db "GO! Press space again!",13,10,0
 resultMsg  BYTE "Reaction time: ",0
 secMsg     BYTE " seconds",0
 dot        BYTE ".",0
+lastMsg1 BYTE "You geussed in ",13,10,0
+lastMsg2 BYTE " times the delay time, Congrats!",13,10,0
 
 
 bytesWritten dd ?
@@ -91,6 +93,30 @@ WaitSecond:
     call Print3Digits
 
     mov edx, OFFSET secMsg
+    call WriteString
+    call Crlf
+
+    ;calculate percentage time geussed
+    mov eax, elapsedMS
+    mov ebx, randomMillis
+    xor edx, edx
+    div ebx
+
+    mov ecx,edx
+
+    ; Print result
+    mov edx, OFFSET lastMsg1
+    call WriteString
+
+    call WriteDec        ; print whole seconds
+
+    mov edx, OFFSET dot
+    call WriteString
+
+    mov eax, ecx         ; remainder ms
+    call Print3Digits
+
+    mov edx, OFFSET lastMsg2
     call WriteString
     call Crlf
 
