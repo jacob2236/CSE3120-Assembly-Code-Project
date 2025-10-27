@@ -15,9 +15,9 @@ welcome db "Welcome to our reaction time game!",13,10,\
 pressMsg db "Press the space bar when ready...",13,10,0
 goMsg    db "GO! Press space again!",13,10,0
 resultMsg  BYTE "Reaction time: ",0
-secMsg     BYTE " seconds",0
+secMsg     BYTE " seconds",13,10,0
 dot        BYTE ".",0
-lastMsg1 BYTE "You geussed in ",13,10,0
+lastMsg1 BYTE "You geussed in ",0
 lastMsg2 BYTE " times the delay time, Congrats!",13,10,0
 
 
@@ -77,7 +77,6 @@ WaitSecond:
     mov ebx, 1000
     xor edx, edx
     div ebx
-
     mov ecx,edx
 
     ; Print result
@@ -94,14 +93,12 @@ WaitSecond:
 
     mov edx, OFFSET secMsg
     call WriteString
-    call Crlf
 
     ;calculate percentage time geussed
     mov eax, elapsedMS
     mov ebx, randomMillis
     xor edx, edx
     div ebx
-
     mov ecx,edx
 
     ; Print result
@@ -118,13 +115,12 @@ WaitSecond:
 
     mov edx, OFFSET lastMsg2
     call WriteString
-    call Crlf
 
     ; Exit program  
     INVOKE ExitProcess, 0  
 main ENDP  
 
-; Prints number in EAX as exactly 3 digits (000–999)
+; Prints number in EAX as exactly 3 digits (000ï¿½999)
 Print3Digits PROC
     push ebx
     push ecx
