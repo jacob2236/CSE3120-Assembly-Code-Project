@@ -120,7 +120,7 @@ WaitSecond:
     INVOKE ExitProcess, 0  
 main ENDP  
 
-; Prints number in EAX as exactly 3 digits (000�999)
+; Prints number in EAX as exactly 3 digits (000-999)
 Print3Digits PROC
     push ebx
     push ecx
@@ -151,3 +151,4 @@ Print3Digits ENDP
 
 
 END main  
+
